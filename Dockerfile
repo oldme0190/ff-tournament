@@ -5,7 +5,7 @@ RUN apt-get update && apt-get install -y \
 
 RUN docker-php-ext-install pdo pdo_mysql
 
-COPY --from=composer:latest /usr/bin/composer /usr/bin/comp>
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 WORKDIR /app
 
@@ -16,4 +16,3 @@ RUN composer install --no-dev --optimize-autoloader
 EXPOSE 10000
 
 CMD php artisan serve --host=0.0.0.0 --port=10000
-
