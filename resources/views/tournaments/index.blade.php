@@ -1,25 +1,17 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>FF Tournament</title>
-</head>
-<body>
+<h2>🎮 Tournament List</h2>
 
-<h1>🎮 FF Tournament</h1>
+@foreach($tournaments as $t)
+    <div style="border:1px solid #fff; margin:10px; padding:10px;">
+        <h3>{{ $t->title }}</h3>
+        <p>{{ $t->type }}</p>
+        <p>Entry: {{ $t->entry_fee }}</p>
+        <p>Prize: {{ $t->prize }}</p>
 
-<div>
-    <h3>BR Match</h3>
-    <p>Entry Fee: 50 BDT</p>
-    <button>Join Now</button>
-</div>
+        <p>Room ID: {{ $t->room_id }}</p>
+        <p>Password: {{ $t->password }}</p>
 
-<hr>
-
-<div>
-    <h3>Clash Squad</h3>
-    <p>Entry Fee: 30 BDT</p>
-    <button>Join Now</button>
-</div>
-
-</body>
-</html>
+        <a href="/tournament/join/{{ $t->id }}">
+            <button>Join</button>
+        </a>
+    </div>
+@endforeach

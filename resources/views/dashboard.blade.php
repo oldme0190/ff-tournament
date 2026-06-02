@@ -1,40 +1,45 @@
-<x-app-layout>
-    <div class="min-h-screen bg-gray-900 text-white">    <div class="bg-gradient-to-r from-orange-600 to-red-600 p-6 text-center">
-        <h1 class="text-3xl font-bold">FREE FIRE TOURNAMENT</h1>
-        <p class="text-lg">Battle For Glory</p>
-        <p class="mt-2">FF Tournament E-Sport</p>
-    </div>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Admin Dashboard</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
 
-    <div class="p-4">
-        <div class="bg-gray-800 rounded-xl p-5 mb-4">
-            <h2 class="text-xl font-bold">BR Match</h2>
-            <p>Entry Fee: Free</p>
-            <p>Prize Pool: 100 Diamonds</p>
-        </div>
+<body style="font-family:Arial; background:#0f0f0f; color:white; padding:20px;">
 
-        <div class="bg-gray-800 rounded-xl p-5 mb-4">
-            <h2 class="text-xl font-bold">Clash Squad</h2>
-            <p>Entry Fee: 20 BDT</p>
-            <p>Prize Pool: 500 Diamonds</p>
-        </div>
+<h2>🏠 Admin Dashboard</h2>
 
-        <div class="bg-gray-800 rounded-xl p-5 mb-4">
-            <h2 class="text-xl font-bold">Squad Tournament</h2>
-            <p>Entry Fee: 50 BDT</p>
-            <p>Prize Pool: 1000 Diamonds</p>
-        </div>
-    </div>
+<div style="margin-top:20px;">
 
-    <div class="fixed bottom-0 left-0 w-full bg-black border-t border-gray-700">
-        <div class="flex justify-around p-3">
-            <span>🏠 Home</span>
-            <span>🎮 Matches</span>
-            <span>💰 Wallet</span>
-            <span>🏆 Results</span>
-            <span>👤 Profile</span>
-        </div>
-    </div>
+    <a href="/admin/tournaments/create">
+        <button style="padding:10px 20px; margin:5px; background:green; color:white; border:none;">
+            ➕ Create Tournament
+        </button>
+    </a>
+
+    <a href="/tournaments">
+        <button style="padding:10px 20px; margin:5px; background:blue; color:white; border:none;">
+            🎮 View Tournaments
+        </button>
+    </a>
 
 </div>
 
-</x-app-layout>
+<hr style="margin:20px 0;">
+
+<h3>⚡ Quick Info</h3>
+<p>✔ Tournament System Active</p>
+<p>✔ Join System Active</p>
+<p>✔ Wallet System Active</p>
+
+</body>
+</html>
+
+<h3>💰 Deposit Wallet</h3>
+
+<form method="POST" action="/wallet/deposit">
+    <?php echo csrf_field(); ?>
+
+    <input type="number" name="amount" placeholder="Enter Amount">
+    <button type="submit">Deposit</button>
+</form>
