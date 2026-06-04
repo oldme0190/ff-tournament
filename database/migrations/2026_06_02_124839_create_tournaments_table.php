@@ -1,12 +1,26 @@
-public function up(): void
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
 {
-    Schema::create('tournaments', function (Blueprint $table) {
-        $table->id();
-        $table->string('title'); // BR Match / CS Match
-        $table->integer('entry_fee')->default(0);
-        $table->integer('prize')->default(0);
-        $table->string('type'); // BR / CS
-        $table->integer('slots')->default(100);
-        $table->timestamps();
-    });
-}
+    public function up(): void
+    {
+        Schema::create('tournaments', function (Blueprint $table) {
+            $table->id();
+            $table->string('title');
+            $table->integer('entry_fee')->default(0);
+            $table->integer('prize')->default(0);
+            $table->string('type');
+            $table->integer('slots')->default(100);
+            $table->timestamps();
+        });
+    }
+
+    public function down(): void
+    {
+        Schema::dropIfExists('tournaments');
+    }
+};
