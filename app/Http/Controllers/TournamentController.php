@@ -4,26 +4,23 @@ namespace App\Http\Controllers;
 
 use App\Models\Tournament;
 use App\Models\TournamentUser;
-use Illuminate\Http\Request;
 use App\Models\WalletTransaction;
+use App\Models\Result;
 use Illuminate\Http\Request;
 
 class TournamentController extends Controller
 {
-    // LIST
     public function index()
     {
         $tournaments = Tournament::all();
         return view('tournaments.index', compact('tournaments'));
     }
 
-    // CREATE PAGE
     public function create()
     {
         return view('tournaments.create');
     }
 
-    // STORE TOURNAMENT
     public function store(Request $request)
     {
         Tournament::create([
@@ -39,7 +36,6 @@ class TournamentController extends Controller
         return redirect('/tournaments');
     }
 
-    // JOIN SYSTEM
     public function join($id)
     {
         $user = auth()->user();
@@ -67,9 +63,7 @@ class TournamentController extends Controller
 
         return back()->with('success', 'Joined Successfully!');
     }
-}
 
-// 🏆 RESULT SYSTEM (NEW)
     public function result($id)
     {
         $results = Result::where('tournament_id', $id)
@@ -78,57 +72,53 @@ class TournamentController extends Controller
 
         return view('tournaments.result', compact('results'));
     }
-}
 
-public function editResult($id)
-{
-    $tournament = \App\Models\Tournament::find($id);
+    public function editResult($id)
+    {
+        $tournament = Tournament::find($id);
+        $players = TournamentUser::where('tournament_id', $id)->get();
 
-    $players = \App\Models\TournamentUser::where('tournament_id', $id)->get();
-
-    return view('tournaments.add_result', compact('tournament', 'players'));
-}
-
-public function storeResult(\Illuminate\Http\Request $request)
-{
-    $kills = $request->kills; // array
-
-    $maxKills = max($kills);
-
-    foreach ($kills as $userId => $kill) {
-
-        \App\Models\Result::create([
-            'tournament_id' => $request->tournament_id,
-            'user_id' => $userId,
-            'kills' => $kill,
-            'is_winner' => ($kill == $maxKills),
-        ]);
+        return view('tournaments.add_result', compact('tournament', 'players'));
     }
 
-    return redirect('/tournaments')->with('success', 'Result Published!');
-}
+    public function storeResult(Request $request)
+    {
+        $kills = $request->kills;
+        $maxKills = max($kills);
 
-public function liveMatch($id)
-{
-    $tournament = \App\Models\Tournament::find($id);
+        foreach ($kills as $userId => $kill) {
+            Result::create([
+                'tournament_id' => $request->tournament_id,
+                'user_id' => $userId,
+                'kills' => $kill,
+                'is_winner' => ($kill == $maxKills),
+            ]);
+        }
 
-    $players = \App\Models\TournamentUser::where('tournament_id', $id)->get();
+        return redirect('/tournaments')->with('success', 'Result Published!');
+    }
 
-    return view('tournaments.live_match', compact('tournament', 'players'));
-}
+    public function liveMatch($id)
+    {
+        $tournament = Tournament::find($id);
+        $players = TournamentUser::where('tournament_id', $id)->get();
 
-public function deposit(Request $request)
-{
-    $user = auth()->user();
+        return view('tournaments.live_match', compact('tournament', 'players'));
+    }
 
-    $user->balance += $request->amount;
-    $user->save();
+    public function deposit(Request $request)
+    {
+        $user = auth()->user();
 
-    WalletTransaction::create([
-        'user_id' => $user->id,
-        'type' => 'deposit',
-        'amount' => $request->amount,
-    ]);
+        $user->balance += $request->amount;
+        $user->save();
 
-    return back()->with('success', 'Money Added to Wallet!');
+        WalletTransaction::create([
+            'user_id' => $user->id,
+            'type' => 'deposit',
+            'amount' => $request->amount,
+        ]);
+
+        return back()->with('success', 'Money Added to Wallet!');
+    }
 }
