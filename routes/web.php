@@ -4,69 +4,75 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\TournamentController;
 use App\Http\Controllers\ProfileController;
 
-// HOME PAGE
+/*
+|--------------------------------------------------------------------------
+| PUBLIC HOME PAGE
+|--------------------------------------------------------------------------
+*/
+
 Route::get('/', function () {
-    return view('dashboard');
+    return view('welcome'); // তোমার FF Tournament Home Page
 });
 
-// TOURNAMENTS
+/*
+|--------------------------------------------------------------------------
+| TOURNAMENTS
+|--------------------------------------------------------------------------
+*/
+
 Route::get('/tournaments', [TournamentController::class, 'index']);
 
-// JOIN TOURNAMENT
-Route::get('/tournament/join/{id}', [TournamentController::class, 'join'])
-    ->middleware('auth');
+/*
+|--------------------------------------------------------------------------
+| AUTH DASHBOARD
+|--------------------------------------------------------------------------
+*/
 
-// TOURNAMENT RESULT
-Route::get('/tournament/result/{id}', [TournamentController::class, 'result']);
-
-// DASHBOARD
 Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware('auth')->name('dashboard');
+    return view('dashboard'); // user login dashboard
+})->middleware(['auth'])->name('dashboard');
 
-// PROFILE
+/*
+|--------------------------------------------------------------------------
+| TOURNAMENT ACTIONS (USER)
+|--------------------------------------------------------------------------
+*/
+
 Route::middleware('auth')->group(function () {
 
-    Route::get('/profile', [ProfileController::class, 'edit'])
-        ->name('profile.edit');
+    Route::get('/tournament/join/{id}', [TournamentController::class, 'join']);
+    Route::get('/tournament/result/{id}', [TournamentController::class, 'result']);
+    Route::get('/match/live/{id}', [TournamentController::class, 'liveMatch']);
 
-    Route::patch('/profile', [ProfileController::class, 'update'])
-        ->name('profile.update');
-
-    Route::delete('/profile', [ProfileController::class, 'destroy'])
-        ->name('profile.destroy');
+    Route::post('/wallet/deposit', [TournamentController::class, 'deposit']);
 });
 
-// ADMIN TOURNAMENT
+/*
+|--------------------------------------------------------------------------
+| ADMIN ROUTES
+|--------------------------------------------------------------------------
+*/
+
 Route::middleware('auth')->group(function () {
 
-    Route::get('/admin/tournaments/create',
-        [TournamentController::class, 'create']);
+    Route::get('/admin/tournaments/create', [TournamentController::class, 'create']);
+    Route::post('/admin/tournaments/store', [TournamentController::class, 'store']);
 
-    Route::post('/admin/tournaments/store',
-        [TournamentController::class, 'store']);
+    Route::get('/admin/result/{id}', [TournamentController::class, 'editResult']);
+    Route::post('/admin/result/store', [TournamentController::class, 'storeResult']);
 });
 
-// ADMIN RESULT
+/*
+|--------------------------------------------------------------------------
+| PROFILE
+|--------------------------------------------------------------------------
+*/
+
 Route::middleware('auth')->group(function () {
 
-    Route::get('/admin/result/{id}',
-        [TournamentController::class, 'editResult']);
-
-    Route::post('/admin/result/store',
-        [TournamentController::class, 'storeResult']);
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
-
-// LIVE MATCH
-Route::middleware('auth')->group(function () {
-
-    Route::get('/match/live/{id}',
-        [TournamentController::class, 'liveMatch']);
-});
-
-// WALLET
-Route::post('/wallet/deposit',
-    [TournamentController::class, 'deposit'])
-    ->middleware('auth');
 
 require __DIR__.'/auth.php';
